@@ -7,7 +7,7 @@ class MeetingsController < ApplicationController
   def user_calendar
     @user = User.find(params[:user_id])
     @investor = params[:investor_id] ? Investor.find(params[:investor_id]) : Investor.first
-    @meetings = @investor.meetings.order(start_time: :asc)
+    @meetings = @investor.meetings.where(status: [:open, :booked]).order(start_time: :asc)
   end
 
   # This action is used for investor
@@ -53,32 +53,33 @@ class MeetingsController < ApplicationController
     require 'pry'; binding.pry
   end
 
-  # # This action is used for investor
-  # # Investor may close the meeting which is not booked
-  # def destroy
-  #   @meeting = Meeting.find(params[:id])
-  #   raise "You can only disable a meeting which is opening for booking. (meeting##{@meeting.id})" unless @meeting.open?
+  # This action is used for investor
+  # Investor may close the meeting which is not booked
+  def destroy
+    @meeting = Meeting.find(params[:id])
+    raise "You can only disable a meeting which is opening for booking. (meeting##{@meeting.id})" unless @meeting.open?
 
-  #   start_time = @meeting.start_time
-  #   @investor = @meeting.investor
+    start_time = @meeting.start_time
+    @investor = @meeting.investor
 
-  #   # used for generate the new calendar card element
-  #   new_attrs = @meeting.attributes.slice("start_time", "investor_id").merge(status: :not_open)
+    # used for generate the new calendar card element
+    new_attrs = @meeting.attributes.slice("start_time", "investor_id").merge(status: :not_open)
 
-  #   @meeting.destroy!
+    @meeting.destroy!
+    broadcast_investor_changes_for_user_calendar(@investor)
 
-  #   respond_to do |format|
-  #     format.turbo_stream do
-  #       render turbo_stream: [
-  #         turbo_stream.replace("calendar_card-#{start_time.to_i}", partial: "meetings/investor_calendar_card", locals: {meeting: Meeting.new(new_attrs), investor: @investor})
-  #       ]
-  #     end
-  #     format.html { redirect_to investor_calendar_url(@investor) }
-  #   end
-  # rescue Exception => e
-  #   # TODO
-  #   require 'pry'; binding.pry
-  # end
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.replace("calendar_card-#{start_time.to_i}", partial: "meetings/investor_calendar_card", locals: {meeting: Meeting.new(new_attrs), investor: @investor})
+        ]
+      end
+      format.html { redirect_to investor_calendar_url(@investor) }
+    end
+  rescue Exception => e
+    # TODO
+    require 'pry'; binding.pry
+  end
 
 
   # This action is used for user
@@ -88,7 +89,10 @@ class MeetingsController < ApplicationController
     @meeting = Meeting.find(params[:id])
     @investor = @meeting.investor
 
-    raise "You can only book a open meeting (meeting##{@meeting.id})" unless @meeting.open?
+    raise "This meeting time is not available for booking." if @meeting.not_open?
+    raise "This meeting time has been booked." if @meeting.booked?
+    raise "This meeting time has been cancelled." if @meeting.cancelled?
+
     @meeting.update!(user: @user, status: :booked)
 
     # Brodcase the updated calendar card for inventor
@@ -100,14 +104,10 @@ class MeetingsController < ApplicationController
       }
     )
 
-    respond_to do |format|
-      # format.turbo_stream do
-      #   render turbo_stream: [
-      #     turbo_stream.replace("calendar_card-#{@meeting.start_time.to_i}", partial: "meetings/user_calendar_card", locals: {meeting: @meeting, user: @user})
-      #   ]
-      # end
-      format.html { redirect_to user_calendar_path(@user, investor_id: @investor) }
-    end
+    redirect_to user_calendar_path(@user, investor_id: @investor)
+  rescue Exception => e
+    # TODO
+    require 'pry'; binding.pry
   end
 
   # This action is used for user
@@ -137,6 +137,9 @@ class MeetingsController < ApplicationController
       # end
       format.html { redirect_to user_calendar_path(@user, investor_id: @investor) }
     end
+  rescue Exception => e
+    # TODO
+    require 'pry'; binding.pry
   end
 
   private

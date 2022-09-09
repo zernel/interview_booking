@@ -3,6 +3,12 @@ module ApplicationHelper
     "<i class='fa-#{type} fa-#{name}'></i>".html_safe
   end
 
+  def time_range(start_time, duration: Meeting::DURATION)
+    end_time = start_time + duration
+
+    "#{fa_icon("clock", type: "regular")} #{start_time.strftime("%H:%M")} ~ #{end_time.strftime("%H:%M")}".html_safe
+  end
+
   # TO IMPROVE: By default, genearte the next 1 week for testing
   def date_selector_options
     7.times.map do |i|

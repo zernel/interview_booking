@@ -1,7 +1,7 @@
 .card{id: "calendar_card-#{meeting.start_time.to_i}"}
   .card-body
     .card-title
-      = meeting.start_time.strftime("%H:%M")
+      %strong= time_range(meeting.start_time)
 
     - if meeting.open?
       = button_to "Book this time", book_meeting_path(meeting, user_id: user), class: "btn btn-success btn-sm btn-block"
@@ -10,4 +10,4 @@
       - if meeting.user == user
         = button_to "Cancel Booking", unbook_meeting_path(meeting, user_id: user), class: "btn btn-warning btn-sm btn-block"
       - else
-        = link_to "Not available", "javascript:void(0);", class: "btn btn-secondary btn-sm btn-block disabled"
+        = link_to "Booked by others", "javascript:void(0);", class: "btn btn-secondary btn-sm btn-block disabled"

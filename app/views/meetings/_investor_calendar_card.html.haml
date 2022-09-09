@@ -1,9 +1,7 @@
 .card{class: calendar_card_klass(meeting.status), id: "calendar_card-#{meeting.start_time.to_i}"}
   .card-body
     .card-title
-      %strong
-        = fa_icon("clock", type: "regular")
-        = meeting.start_time.strftime("%H:%M")
+      %strong= time_range(meeting.start_time)
       %span.float-end= meeting_status_label(meeting.status)
 
     - if meeting.not_open?
@@ -12,7 +10,7 @@
     - elsif not meeting.cancelled?
       - if meeting.open?
         .text-muted Available for meeting
+        = button_to "Disable", meeting_path(meeting), method: :delete, class: "btn btn-outline-warning btn-sm btn-block"
       - elsif meeting.booked?
         .text-muted Booked by #{meeting.user.name}
-      = button_to "Cancel", cancel_meeting_path(meeting), class: "btn btn-outline-warning btn-sm btn-block"
-
+        = button_to "Cancel", cancel_meeting_path(meeting), class: "btn btn-outline-danger btn-sm btn-block"
