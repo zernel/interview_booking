@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @investor %>
+
+<div>
+  <%= link_to "Edit this investor", edit_investor_path(@investor) %> |
+  <%= link_to "Back to investors", investors_path %>
+
+  <%= button_to "Destroy this investor", @investor, method: :delete %>
+</div>

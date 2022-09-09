@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Investors</h1>
+
+<div id="investors">
+  <% @investors.each do |investor| %>
+    <%= render investor %>
+    <p>
+      <%= link_to "Show this investor", investor %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New investor", new_investor_path %>
