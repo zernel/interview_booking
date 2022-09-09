@@ -11,5 +11,5 @@
 end
 
 20.times do |i|
-  User.create(name: "创业者 ##{i+1}")
+  User.create(name: "创业者 #{i+1}")
 end

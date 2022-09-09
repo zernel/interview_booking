@@ -2,20 +2,20 @@
   %thead
     %tr
       %th Name
-      %th
+      %th Meetings
       %th
       %th
 
   %tbody
     - @users.each do |user|
       %tr
+        %td= user.name
         %td
-          = user.name
-          = link_to "[Act As]", user_calendar_path(user), target: "_blank"
-        %td= link_to 'Show', user
-        %td= link_to 'Edit', edit_user_path(user)
-        %td= link_to 'Destroy', user, "data-turbo-method": "delete", 'data-turbo-confirm':"Are you sure?"
+          .text-muted TODO: list recent meetings
+        %td.text-end
+          = link_to '[Show]', user
+          = link_to '[Edit]', edit_user_path(user)
+          = link_to '[Destroy]', user, "data-turbo-method": "delete", 'data-turbo-confirm':"Are you sure?"
+        %td.text-end= link_to "#{fa_icon("arrow-up-right-from-square")} Simulate Login".html_safe, user_calendar_path(user), target: "_blank", class: "btn btn-outline-secondary btn-sm"
 
-%br
-
-= link_to 'New User', new_user_path
+= link_to 'New User', new_user_path, class: 'btn btn-secondary'

@@ -2,20 +2,20 @@
   %thead
     %tr
       %th Name
-      %th
+      %th Meetings
       %th
       %th
 
   %tbody
     - @investors.each do |investor|
       %tr
+        %td= investor.name
         %td
-          = investor.name
-          = link_to "[Act As]", investor_calendar_path(investor), target: "_blank"
-        %td= link_to 'Show', investor
-        %td= link_to 'Edit', edit_investor_path(investor)
-        %td= link_to 'Destroy', investor, "data-turbo-method": "delete", 'data-turbo-confirm':"Are you sure?"
+          .text-muted TODO: list recent meetings
+        %td
+          = link_to '[Show]', investor
+          = link_to '[Edit]', edit_investor_path(investor)
+          = link_to '[Destroy]', investor, "data-turbo-method": "delete", 'data-turbo-confirm':"Are you sure?"
+        %td.text-end= link_to "#{fa_icon("arrow-up-right-from-square")} Simulate Login".html_safe, investor_calendar_path(investor), target: "_blank", class: "btn btn-outline-secondary btn-sm"
 
-%br
-
-= link_to 'New Investor', new_investor_path
+= link_to 'New Investor', new_investor_path, class: 'btn btn-secondary'
