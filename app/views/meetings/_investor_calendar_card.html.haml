@@ -5,3 +5,12 @@
         = fa_icon("clock", type: "regular")
         = meeting.start_time.strftime("%H:%M")
       %span.float-end= meeting_status_label(meeting.status)
+
+    - if meeting.not_open?
+      .text-muted Not available.
+      = button_to "Available for Meeting", meetings_path(investor_id: investor, start_time: meeting.start_time.to_i), class: "btn btn-outline-secondary btn-sm btn-block"
+
+    - if meeting.open?
+      .text-muted Available for meeting.
+      = button_to "Disable", meeting_path(meeting), method: :delete, class: "btn btn-outline-warning btn-sm btn-block"
+

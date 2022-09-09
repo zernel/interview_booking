@@ -13,3 +13,17 @@ import {fab} from "@fortawesome/free-brands-svg-icons"
 import {library} from "@fortawesome/fontawesome-svg-core"
 import "@fortawesome/fontawesome-free"
 library.add(far, fas, fab)
+
+
+document.addEventListener("turbo:load", function() {
+  // bind change event to select
+  $('#page-filter').on('change', function () {
+    var baseURL = $(this).data('base-url');
+    var paramsName = $(this).data('params-name');
+    var selectedVal = $(this).val();
+    if (selectedVal) { // require a URL
+      window.location = baseURL + "?" + paramsName + "=" + selectedVal;
+    }
+    return false;
+  });
+});

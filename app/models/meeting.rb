@@ -4,6 +4,9 @@ class Meeting < ApplicationRecord
 
   enum :status, [:not_open, :open, :booked, :cancelled]
 
+  validates :start_time, presence: true
+  validates_uniqueness_of :start_time, scope: :investor_id
+
   # 9am-5pm, every 15 mins
   def self.generate_datetime_sequence_for(date)
     start_at = date.change({ hour: 9, min: 0, sec: 0 })

@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   root "investors#index"
 
+  resources :meetings, only: [:create, :destroy] do
+    post :book, on: :member
+  end
   resources :users do
     get :calendar, to: "meetings#user_calendar"
   end

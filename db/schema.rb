@@ -19,7 +19,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_09_021245) do
 
   create_table "meetings", force: :cascade do |t|
     t.integer "investor_id", null: false
-    t.integer "user_id", null: false
+    t.integer "user_id"
     t.integer "status"
     t.datetime "start_time"
     t.datetime "created_at", null: false
