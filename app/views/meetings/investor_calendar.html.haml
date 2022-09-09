@@ -3,11 +3,11 @@
   %strong #{@investor.name}
   \.
 
-
-.col-4
-  .form-floating
-    = select_tag "date", options_for_select(date_selector_options, @date.strftime("%F")), class: "form-select", id: "page-filter", data: {base_url: investor_calendar_path(@investor), params_name: "date"}
-    %label{:for => "page-filter"} Please select a date
+.col-3
+  %label{:for => "page-filter"} Please select a date for the calendar:
+  .input-group.mb-3
+    %span.input-group-text= fa_icon("calendar")
+    = text_field_tag :date, @date.strftime("%F"), 'data-date-picker': true, class: "form-control", 'data-redirect-on-change' => investor_calendar_path(@investor)
 
 %hr
 

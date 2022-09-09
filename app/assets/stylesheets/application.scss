@@ -1,5 +1,11 @@
+@import 'vendor/flatpickr';
 @import "bootstrap";
 
 .btn-block {
   width: 100%;
+}
+
+// Don't need the disabled style for readonly
+.flatpickr-input.form-control {
+  background-color: #fff !important;
 }

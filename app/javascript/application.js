@@ -15,16 +15,23 @@ import {library} from "@fortawesome/fontawesome-svg-core"
 import "@fortawesome/fontawesome-free"
 library.add(far, fas, fab)
 
+import flatpickr from "flatpickr";
+const initFlatpickr = () => {
+  flatpickr("[data-date-picker]", {});
+}
 
 document.addEventListener("turbo:load", function() {
-  // bind change event to select
-  $('#page-filter').on('change', function () {
-    var baseURL = $(this).data('base-url');
-    var paramsName = $(this).data('params-name');
-    var selectedVal = $(this).val();
-    if (selectedVal) { // require a URL
-      window.location = baseURL + "?" + paramsName + "=" + selectedVal;
-    }
-    return false;
-  });
+  initFlatpickr()
+
+  // Refresh the investor calendar with selected date
+  if($('[data-redirect-on-change]').length) {
+    $('[data-redirect-on-change]').on('change', function() {
+      var baseURL = $(this).data('redirect-on-change');
+      var date = $(this).val();
+      if (date) {
+        window.location = baseURL + "?" + "date=" + date;
+      }
+      return false;
+    })
+  }
 });
