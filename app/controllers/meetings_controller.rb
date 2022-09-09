@@ -1,4 +1,10 @@
 class MeetingsController < ApplicationController
+  def index
+    @date = params[:date] ? Time.zone.parse(params[:date]) : Time.zone.now.beginning_of_day
+    @investors = Investor.all
+    @grouped_meetings = Meeting.where(start_time: @date.beginning_of_day...@date.end_of_day).where(status: [:open, :booked]).group_by(&:investor_id)
+  end
+
   def investor_calendar
     @investor = Investor.find(params[:investor_id])
     @date = params[:date] ? Time.zone.parse(params[:date]) : Time.zone.now.beginning_of_day
@@ -18,6 +24,8 @@ class MeetingsController < ApplicationController
     @date = @meeting.start_time.beginning_of_day
 
     broadcast_investor_changes_for_user_calendar(@investor)
+    broadcast_meeting_changes
+
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
@@ -41,6 +49,8 @@ class MeetingsController < ApplicationController
     @investor = @meeting.investor
 
     broadcast_investor_changes_for_user_calendar(@investor)
+    broadcast_meeting_changes
+
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
@@ -68,6 +78,7 @@ class MeetingsController < ApplicationController
 
     @meeting.destroy!
     broadcast_investor_changes_for_user_calendar(@investor)
+    broadcast_meeting_changes
 
     respond_to do |format|
       format.turbo_stream do
@@ -104,6 +115,7 @@ class MeetingsController < ApplicationController
         content: render_to_string(partial: 'meetings/investor_calendar_card', locals: { meeting: @meeting, investor: @investor })
       }
     )
+    broadcast_meeting_changes
 
     respond_to do |format|
       format.html { redirect_to user_calendar_path(@user, investor_id: @investor) }
@@ -131,6 +143,7 @@ class MeetingsController < ApplicationController
         content: render_to_string(partial: 'meetings/investor_calendar_card', locals: { meeting: @meeting, investor: @investor })
       }
     )
+    broadcast_meeting_changes
 
     respond_to do |format|
       format.html { redirect_to user_calendar_path(@user, investor_id: @investor) }
@@ -145,5 +158,15 @@ class MeetingsController < ApplicationController
     ActionCable.server.broadcast(
       "investor-#{investor.id}", { investor_id: investor.id }
     )
+  end
+
+  def broadcast_meeting_changes
+    ActionCable.server.broadcast(
+      "meetings", {}
+    )
+  end
+
+  def admin_controllers?
+    params[:action] == "index"
   end
 end

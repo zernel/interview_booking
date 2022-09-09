@@ -43,4 +43,22 @@ document.addEventListener("turbo:load", function() {
     });
   }
 
+  if ($('[data-meeting-channel]').length) {
+    consumer.subscriptions.create({
+      channel: "MeetingsChannel"
+    }, {
+      connected() {
+        console.log("Connected to the channel:", this);
+      },
+      disconnected() {
+        console.log("Disconnected");
+      },
+      received(data) {
+        console.log("Received some data:", data);
+        Turbo.visit(window.location.href);
+      }
+    });
+  }
+
+
 })

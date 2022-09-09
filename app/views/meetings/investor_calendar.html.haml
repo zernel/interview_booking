@@ -4,7 +4,7 @@
   \.
 
 .col-3
-  %label{:for => "page-filter"} Please select a date for the calendar:
+  %label Please select a date for the calendar:
   .input-group.mb-3
     %span.input-group-text= fa_icon("calendar")
     = text_field_tag :date, @date.strftime("%F"), 'data-date-picker': true, class: "form-control", 'data-redirect-on-change' => investor_calendar_path(@investor)

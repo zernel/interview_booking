@@ -1,0 +1,25 @@
+.col-3
+  %label Please select a date for the calendar:
+  .input-group.mb-3
+    %span.input-group-text= fa_icon("calendar")
+    = text_field_tag :date, @date.strftime("%F"), 'data-date-picker': true, class: "form-control", 'data-redirect-on-change' => meetings_path
+
+#meetings{ 'data-meeting-channel': "" }
+  .col-8
+    %table.table.table-bordered
+      %tr
+        %th{style: "width:200px;"} #{@date.strftime("%F")}
+        - @investors.each do |investor|
+          %th= investor.name
+      - Meeting.generate_datetime_sequence_for(@date).each do |datetime|
+        %tr
+          %td= time_range(datetime)
+          - @investors.each do |investor|
+            - meetings = @grouped_meetings[investor.id]
+            - if meetings.present? && meeting = meetings.select{|meeting| meeting.start_time == datetime }&.first
+              - if meeting.booked?
+                %td.table-success= meeting.user.name
+              - else
+                %td.table-info 空闲
+            - else
+              %td.table-light
