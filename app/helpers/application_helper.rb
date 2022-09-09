@@ -17,7 +17,7 @@ module ApplicationHelper
     when 'booked'
       "border-success"
     when 'cancelled'
-      "border-warning"
+      "text-bg-secondary"
     else
       "text-dark bg-light"
     end

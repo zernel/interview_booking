@@ -33,23 +33,15 @@ class MeetingsController < ApplicationController
   end
 
   # This action is used for investor
-  # Investor may close the meeting which is not booked
-  def destroy
+  # Investor may cancel the meeting if he is not available at that time
+  def cancel
     @meeting = Meeting.find(params[:id])
-    raise "You can only disable a meeting which is opening for booking. (meeting##{@meeting.id})" unless @meeting.open?
-
-    start_time = @meeting.start_time
-    @investor = @meeting.investor
-
-    # used for generate the new calendar card element
-    new_attrs = @meeting.attributes.slice("start_time", "investor_id").merge(status: :not_open)
-
-    @meeting.destroy!
+    @meeting.update!(status: :cancelled)
 
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
-          turbo_stream.replace("calendar_card-#{start_time.to_i}", partial: "meetings/investor_calendar_card", locals: {meeting: Meeting.new(new_attrs), investor: @investor})
+          turbo_stream.replace("calendar_card-#{@meeting.start_time.to_i}", partial: "meetings/investor_calendar_card", locals: {meeting: @meeting, investor: @investor})
         ]
       end
       format.html { redirect_to investor_calendar_url(@investor) }
@@ -58,6 +50,34 @@ class MeetingsController < ApplicationController
     # TODO
     require 'pry'; binding.pry
   end
+
+  # # This action is used for investor
+  # # Investor may close the meeting which is not booked
+  # def destroy
+  #   @meeting = Meeting.find(params[:id])
+  #   raise "You can only disable a meeting which is opening for booking. (meeting##{@meeting.id})" unless @meeting.open?
+
+  #   start_time = @meeting.start_time
+  #   @investor = @meeting.investor
+
+  #   # used for generate the new calendar card element
+  #   new_attrs = @meeting.attributes.slice("start_time", "investor_id").merge(status: :not_open)
+
+  #   @meeting.destroy!
+
+  #   respond_to do |format|
+  #     format.turbo_stream do
+  #       render turbo_stream: [
+  #         turbo_stream.replace("calendar_card-#{start_time.to_i}", partial: "meetings/investor_calendar_card", locals: {meeting: Meeting.new(new_attrs), investor: @investor})
+  #       ]
+  #     end
+  #     format.html { redirect_to investor_calendar_url(@investor) }
+  #   end
+  # rescue Exception => e
+  #   # TODO
+  #   require 'pry'; binding.pry
+  # end
+
 
   # This action is used for user
   # User will book the open meeting
