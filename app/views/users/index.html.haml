@@ -14,7 +14,7 @@
           = link_to "[Act As]", user_calendar_path(user), target: "_blank"
         %td= link_to 'Show', user
         %td= link_to 'Edit', edit_user_path(user)
-        %td= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' }
+        %td= link_to 'Destroy', user, "data-turbo-method": "delete", 'data-turbo-confirm':"Are you sure?"
 
 %br
 
