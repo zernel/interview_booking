@@ -4,10 +4,10 @@
       = meeting.start_time.strftime("%H:%M")
 
     - if meeting.open?
-      = button_to "Book this time", book_meeting_path(meeting, user_id: user), class: "btn btn-outline-success btn-sm btn-block"
+      = button_to "Book this time", book_meeting_path(meeting, user_id: user), class: "btn btn-success btn-sm btn-block"
 
     - if meeting.booked?
       - if meeting.user == user
-        = link_to "Booked", "javascript:void(0);", class: "btn btn-success btn-sm btn-block disabled"
+        = button_to "Cancel Booking", unbook_meeting_path(meeting, user_id: user), class: "btn btn-warning btn-sm btn-block"
       - else
         = link_to "Not available", "javascript:void(0);", class: "btn btn-secondary btn-sm btn-block disabled"

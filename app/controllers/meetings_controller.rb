@@ -17,6 +17,7 @@ class MeetingsController < ApplicationController
     @meeting = Meeting.create!(investor: @investor, start_time: Time.zone.at(params[:start_time].to_i), status: :open)
     @date = @meeting.start_time.beginning_of_day
 
+    broadcast_investor_changes_for_user_calendar(@investor)
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
@@ -38,6 +39,7 @@ class MeetingsController < ApplicationController
     @meeting = Meeting.find(params[:id])
     @meeting.update!(status: :cancelled)
 
+    broadcast_investor_changes_for_user_calendar(@investor)
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
@@ -99,12 +101,48 @@ class MeetingsController < ApplicationController
     )
 
     respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.replace("calendar_card-#{@meeting.start_time.to_i}", partial: "meetings/user_calendar_card", locals: {meeting: @meeting, user: @user})
-        ]
-      end
-      format.html { redirect_to user_calendar_path(@user) }
+      # format.turbo_stream do
+      #   render turbo_stream: [
+      #     turbo_stream.replace("calendar_card-#{@meeting.start_time.to_i}", partial: "meetings/user_calendar_card", locals: {meeting: @meeting, user: @user})
+      #   ]
+      # end
+      format.html { redirect_to user_calendar_path(@user, investor_id: @investor) }
     end
+  end
+
+  # This action is used for user
+  # User will unbook the booked meeting
+  def unbook
+    @user = User.find(params[:user_id]) if params[:user_id]
+    @meeting = Meeting.find(params[:id])
+    @investor = @meeting.investor
+
+    raise "You can only unbook a meeting which is booked by you (meeting##{@meeting.id})" unless @meeting.booked? && @meeting.user == @user
+    @meeting.update!(user: nil, status: :open)
+
+    # Brodcase the updated calendar card for inventor
+    ActionCable.server.broadcast(
+      "booking-#{@meeting.investor.id}",
+      {
+        located_id: "calendar_card-#{@meeting.start_time.to_i}",
+        content: render_to_string(partial: 'meetings/investor_calendar_card', locals: { meeting: @meeting, investor: @investor })
+      }
+    )
+
+    respond_to do |format|
+      # format.turbo_stream do
+      #   render turbo_stream: [
+      #     turbo_stream.replace("calendar_card-#{@meeting.start_time.to_i}", partial: "meetings/user_calendar_card", locals: {meeting: @meeting, user: @user})
+      #   ]
+      # end
+      format.html { redirect_to user_calendar_path(@user, investor_id: @investor) }
+    end
+  end
+
+  private
+  def broadcast_investor_changes_for_user_calendar(investor)
+    ActionCable.server.broadcast(
+      "investor-#{investor.id}", { investor_id: investor.id }
+    )
   end
 end

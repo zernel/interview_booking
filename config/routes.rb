@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   root "investors#index"
 
   resources :meetings, only: [:create, :destroy] do
-    post :book, on: :member
+    post :book, :unbook, on: :member
     post :cancel, on: :member
   end
   resources :users do

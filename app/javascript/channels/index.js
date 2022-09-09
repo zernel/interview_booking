@@ -23,4 +23,24 @@ document.addEventListener("turbo:load", function() {
       }
     });
   }
+
+  if ($('[data-investor-channel]').length) {
+    let id = $('[data-investor-channel]').data('investor-channel').id
+    consumer.subscriptions.create({
+      channel: "InvestorChannel",
+      id: id
+    }, {
+      connected() {
+        console.log("Connected to the channel:", this);
+      },
+      disconnected() {
+        console.log("Disconnected");
+      },
+      received(data) {
+        console.log("Received some data:", data);
+        Turbo.visit(window.location.href);
+      }
+    });
+  }
+
 })
