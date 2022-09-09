@@ -3,6 +3,7 @@ import jquery from 'jquery'
 import "@hotwired/turbo-rails"
 import 'bootstrap'
 import "controllers"
+import "./channels"
 
 window.$ = jquery
 

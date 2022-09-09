@@ -9,9 +9,12 @@
       %a.nav-link{class: "#{'active' if @investor == investor}", :href => user_calendar_path(@user, investor_id: investor.id)}= investor.name
 
 #meetings
-  - @meetings.group_by{|meeting| meeting.start_time.strftime("%F")}.each do |date, meetings|
-    %h5.mt-4.mb-0= date
-    .row{id: "date-#{date}"}
-      - meetings.each do |meeting|
-        .col-3.mt-2
-          = render "user_calendar_card", meeting: meeting, investor: @investor, user: @user
+  - if @meetings.count > 0
+    - @meetings.group_by{|meeting| meeting.start_time.strftime("%F")}.each do |date, meetings|
+      %h5.mt-4.mb-0= date
+      .row{id: "date-#{date}"}
+        - meetings.each do |meeting|
+          .col-3.mt-2
+            = render "user_calendar_card", meeting: meeting, investor: @investor, user: @user
+  - else
+    .text-muted No available meetings.

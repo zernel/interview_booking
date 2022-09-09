@@ -69,6 +69,15 @@ class MeetingsController < ApplicationController
     raise "You can only book a open meeting (meeting##{@meeting.id})" unless @meeting.open?
     @meeting.update!(user: @user, status: :booked)
 
+    # Brodcase the updated calendar card for inventor
+    ActionCable.server.broadcast(
+      "booking-#{@meeting.investor.id}",
+      {
+        located_id: "calendar_card-#{@meeting.start_time.to_i}",
+        content: render_to_string(partial: 'meetings/investor_calendar_card', locals: { meeting: @meeting, investor: @investor })
+      }
+    )
+
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [

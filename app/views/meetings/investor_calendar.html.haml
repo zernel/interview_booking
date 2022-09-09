@@ -12,7 +12,9 @@
 %hr
 
 %h5 Schedule on #{@date.strftime("%F")}:
-#meetings
+
+- # subscribed the BookingChannel to auto update the booking event
+#meetings{ 'data-booking-channel': { id: @investor.id }.to_json.html_safe }
   - # slice(4) so that each hour's meetings are in the same line
   - @investor.get_schedule_on(@date).each_slice(4).each do |meetings|
     .row.mt-2
