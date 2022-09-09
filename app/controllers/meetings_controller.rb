@@ -38,6 +38,7 @@ class MeetingsController < ApplicationController
   def cancel
     @meeting = Meeting.find(params[:id])
     @meeting.update!(status: :cancelled)
+    @investor = @meeting.investor
 
     broadcast_investor_changes_for_user_calendar(@investor)
     respond_to do |format|
@@ -48,9 +49,6 @@ class MeetingsController < ApplicationController
       end
       format.html { redirect_to investor_calendar_url(@investor) }
     end
-  rescue Exception => e
-    # TODO
-    require 'pry'; binding.pry
   end
 
   # This action is used for investor
@@ -104,7 +102,9 @@ class MeetingsController < ApplicationController
       }
     )
 
-    redirect_to user_calendar_path(@user, investor_id: @investor)
+    respond_to do |format|
+      format.html { redirect_to user_calendar_path(@user, investor_id: @investor) }
+    end
   rescue Exception => e
     # TODO
     require 'pry'; binding.pry
@@ -130,11 +130,6 @@ class MeetingsController < ApplicationController
     )
 
     respond_to do |format|
-      # format.turbo_stream do
-      #   render turbo_stream: [
-      #     turbo_stream.replace("calendar_card-#{@meeting.start_time.to_i}", partial: "meetings/user_calendar_card", locals: {meeting: @meeting, user: @user})
-      #   ]
-      # end
       format.html { redirect_to user_calendar_path(@user, investor_id: @investor) }
     end
   rescue Exception => e

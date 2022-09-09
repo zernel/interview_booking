@@ -6,6 +6,7 @@ class Meeting < ApplicationRecord
 
   validates :start_time, presence: true
   validates_uniqueness_of :start_time, scope: :investor_id
+  validate :validate_bookings
 
   # 9am-5pm, every 15 mins
   DURATION = 15.minutes
@@ -18,5 +19,14 @@ class Meeting < ApplicationRecord
     end
 
     datetimes
+  end
+
+  private
+  def validate_bookings
+    # User and the same investor can only meet once a day at most
+    if booked?
+      already_booked = investor.meetings.where(start_time: start_time.beginning_of_day...start_time.end_of_day).where(user: user).present?
+      errors.add(:user, "can only meet once a day at most") if already_booked
+    end
   end
 end

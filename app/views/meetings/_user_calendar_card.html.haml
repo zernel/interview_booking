@@ -4,7 +4,10 @@
       %strong= time_range(meeting.start_time)
 
     - if meeting.open?
-      = button_to "Book this time", book_meeting_path(meeting, user_id: user), class: "btn btn-success btn-sm btn-block"
+      - if has_booked_this_day
+        = link_to "Not available", "javascript:void(0);", class: "btn btn-secondary btn-sm btn-block disabled"
+      - else
+        = button_to "Book this time", book_meeting_path(meeting, user_id: user), class: "btn btn-success btn-sm btn-block"
 
     - if meeting.booked?
       - if meeting.user == user

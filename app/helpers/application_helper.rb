@@ -20,12 +20,14 @@ module ApplicationHelper
   def calendar_card_klass(status)
     # Reference: bootstrap card styles https://getbootstrap.com/docs/5.2/components/card/#card-styles
     case status.to_s
+    when "not_open"
+      "text-dark bg-light"
+    when 'open'
+      "border-info"
     when 'booked'
       "border-success"
     when 'cancelled'
-      "text-bg-secondary"
-    else
-      "text-dark bg-light"
+      "border-warning"
     end
   end
 
