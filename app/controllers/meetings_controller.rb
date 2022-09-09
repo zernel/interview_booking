@@ -29,8 +29,8 @@ class MeetingsController < ApplicationController
       format.html { redirect_to investor_calendar_url(@investor) }
     end
   rescue Exception => e
-    # TODO
-    require 'pry'; binding.pry
+    flash[:error] = "Unexpected Error:\n #{e.to_s}"
+    redirect_to investor_calendar_url(@investor)
   end
 
   # This action is used for investor
@@ -49,6 +49,9 @@ class MeetingsController < ApplicationController
       end
       format.html { redirect_to investor_calendar_url(@investor) }
     end
+  rescue Exception => e
+    flash[:error] = "Unexpected Error:\n #{e.to_s}"
+    redirect_to investor_calendar_url(@investor)
   end
 
   # This action is used for investor
@@ -75,8 +78,8 @@ class MeetingsController < ApplicationController
       format.html { redirect_to investor_calendar_url(@investor) }
     end
   rescue Exception => e
-    # TODO
-    require 'pry'; binding.pry
+    flash[:error] = "Unexpected Error:\n #{e.to_s}"
+    redirect_to investor_calendar_url(@investor)
   end
 
 
@@ -106,8 +109,8 @@ class MeetingsController < ApplicationController
       format.html { redirect_to user_calendar_path(@user, investor_id: @investor) }
     end
   rescue Exception => e
-    # TODO
-    require 'pry'; binding.pry
+    flash[:error] = "Unexpected Error:\n #{e.to_s}"
+    redirect_to user_calendar_path(@user, investor_id: @investor)
   end
 
   # This action is used for user
@@ -133,8 +136,8 @@ class MeetingsController < ApplicationController
       format.html { redirect_to user_calendar_path(@user, investor_id: @investor) }
     end
   rescue Exception => e
-    # TODO
-    require 'pry'; binding.pry
+    flash[:error] = "Unexpected Error:\n #{e.to_s}"
+    redirect_to user_calendar_path(@user, investor_id: @investor)
   end
 
   private

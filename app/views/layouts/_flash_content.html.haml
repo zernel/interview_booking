@@ -1,5 +1,5 @@
 - flash_klass_mappings = {'error' => 'danger', 'notice' => 'warning', 'success' => 'success'}
 - flash.to_h.slice('error', 'notice', 'success').each do |type, message|
   .alert.alert-primary.alert-dismissible{:class => "alert-#{flash_klass_mappings[type] || 'warning'}", :role => "alert"}
-    = message.try(:html_safe)
+    %pre= message.try(:html_safe)
     %button.btn-close{"aria-label" => "Close", "data-bs-dismiss" => "alert", "aria-label" => "Close", :type => "button"}
