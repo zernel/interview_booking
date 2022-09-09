@@ -1,6 +1,4 @@
-%h1 Listing users
-
-%table
+%table.table
   %thead
     %tr
       %th Name
@@ -11,7 +9,9 @@
   %tbody
     - @users.each do |user|
       %tr
-        %td= user.name
+        %td
+          = user.name
+          = link_to "[Act As]", user_calendar_path(user), target: "_blank"
         %td= link_to 'Show', user
         %td= link_to 'Edit', edit_user_path(user)
         %td= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' }

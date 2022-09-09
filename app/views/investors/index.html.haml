@@ -1,6 +1,4 @@
-%h1 Listing investors
-
-%table
+%table.table
   %thead
     %tr
       %th Name
@@ -11,7 +9,9 @@
   %tbody
     - @investors.each do |investor|
       %tr
-        %td= investor.name
+        %td
+          = investor.name
+          = link_to "[Act As]", investor_calendar_path(investor), target: "_blank"
         %td= link_to 'Show', investor
         %td= link_to 'Edit', edit_investor_path(investor)
         %td= link_to 'Destroy', investor, method: :delete, data: { confirm: 'Are you sure?' }

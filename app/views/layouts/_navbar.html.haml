@@ -1,0 +1,5 @@
+%ul.nav.nav-tabs
+  %li.nav-item
+    %a.nav-link{class: "#{'active' if params[:controller] =='investors'}", :href => investors_path} 合伙人
+  %li.nav-item
+    %a.nav-link{class: "#{'active' if params[:controller] == 'users'}", :href => users_path} 创业者
