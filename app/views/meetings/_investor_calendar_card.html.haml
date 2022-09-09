@@ -1,0 +1,7 @@
+.card{class: calendar_card_klass(meeting.status), id: "calendar_card-#{meeting.start_time.to_i}"}
+  .card-body
+    .card-title
+      %strong
+        = fa_icon("clock", type: "regular")
+        = meeting.start_time.strftime("%H:%M")
+      %span.float-end= meeting_status_label(meeting.status)

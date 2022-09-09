@@ -1,1 +1,21 @@
-%h4 Investor Calendar - #{@investor.name}
+.alert.alert-info
+  You are viewing the calendar as
+  %strong #{@investor.name}
+  \.
+
+
+.col-4
+  .form-floating
+    = select_tag "date", options_for_select(date_selector_options, @date.strftime("%F")), class: "form-select", id: "page-filter", data: {base_url: investor_calendar_path(@investor), params_name: "date"}
+    %label{:for => "page-filter"} Please select a date
+
+%hr
+
+%h5 Schedule on #{@date.strftime("%F")}:
+#calendar-events
+  - # slice(4) so that each hour's meetings are in the same line
+  - @investor.get_schedule_on(@date).each_slice(4).each do |meetings|
+    .row.mt-2
+      - meetings.each do |meeting|
+        .col-3
+          = render "investor_calendar_card", meeting: meeting, investor: @investor
